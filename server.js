@@ -51,34 +51,54 @@ app.get('/',(req,res)=>{
 });
 
 app.post('/signin',(req,res)=>{
-    bcrypt.compare("apples", "$2b$10$bgNGkp0rD.TvjibHJ8nCe.XC0UqzbvFWCdVShdYmxaZ25.5jiV4Gy", function(err, res) {
-        console.log("First guess",res);
-    });
-    bcrypt.compare("something wrong", "$2b$10$bgNGkp0rD.TvjibHJ8nCe.XC0UqzbvFWCdVShdYmxaZ25.5jiV4Gy", function(err, res) {
-        console.log("Second guess",res);
-    });
-    if(req.body.email==database.users[0].email&&
-    req.body.password==database.users[0].password){
-        res.json(database.users[0])
-    }
-    else{
-        res.status(400).json('error logging in');
-    }
+    db.select('email','hash').from('login')
+        .where('email','=',req.body.email)
+        .then(data => {
+            const isVailid = bcrypt.compareSync(req.body.password,data[0].hash)
+            if(isVailid){
+                return db.select('*').from('users')
+                    .where('email','=',req.body.email)
+                    .then(user=>{
+                        res.json(user[0]);
+                    })
+                    .catch(err => res.status(400).json('unable to get user'))
+            }
+            else{
+                return res.status(400).json('wrong credentials')
+            }
+        })
+        .catch(err=>res.status(400).json('wrong credentials'))
 });
 
 app.post('/register',(req,res)=>{
     const {name,email,password} = req.body;
-    //bcrypt.hash(password,10, (err,hash)=>{
-    //    console.log(hash);
-    //});
+    const hash = bcrypt.hashSync(password,10);
+    db.transaction(trx => {
+       trx.insert({
+           hash:hash,
+           email:email
+       }).into('login')
+           .returning('email')
+           .then(loginEmail=>{
+               return trx('users').returning('*')
+                   .insert({
+                       email:loginEmail[0],
+                       name:name,
+                       joined: new Date()
+                   })
+                   .then(user=>{
+                       res.json(user[0])
+                       })
+           })
+    });
     db('users').returning('*')
         .insert({
-        email: email,
-        name: name,
-        joined: new Date()
-    }).then(user=>{
-        res.json(user[0])
-    }).catch(err=>res.status(400).json('unable to register'));
+            email: email,
+            name: name,
+            joined: new Date()
+        }).then(user=>{res.json(user[0])
+
+        }).catch(err=>res.status(400).json('unable to register'));
 });
 
 app.get('/profile/:id',(req,res) =>{
