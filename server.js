@@ -125,6 +125,6 @@ app.put('/image',(req,res)=>{
         .catch(err=>console.log(err))
 });
 
-app.listen(5432, () => {
-    console.log('It is working on port 5432');
+app.listen(3000, () => {
+    console.log('It is working on port 3000');
 });
