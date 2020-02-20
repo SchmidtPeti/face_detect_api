@@ -128,3 +128,4 @@ app.put('/image',(req,res)=>{
 app.listen(3000, () => {
     console.log('It is working on port 3000');
 });
+console.log(process.env.NODE_HOST);
