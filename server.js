@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 
 const bcrypt = require('bcrypt');
@@ -6,17 +7,16 @@ const bodyParser = require('body-parser');
 
 const cors = require('cors');
 
-
 const app = express();
 
 var db = require('knex')({
     client: 'pg',
     version: '7.2',
     connection: {
-        host : process.env.HOST,
-        user : process.env.USER,
-        password : process.env.PASSWORD,
-        database : process.env.DATABASE,
+        host : process.env.NODE_HOST,
+        user : process.env.NODE_USER,
+        password : process.env.NODE_PASSWORD,
+        database : process.env.NODE_DATABASE,
     }
 });
 
