@@ -31,6 +31,7 @@ const database = {
             name: 'Jhon',
             email : 'jhon@gmail.com',
             password: 'cookies',
+            hash: '',
             entries: 0,
             joined: new Date()
         },
@@ -39,6 +40,7 @@ const database = {
             name: 'Sally',
             email : 'sally@gmail.com',
             password: 'bananas',
+            hash: '',
             entries: 0,
             joined: new Date()
         }
@@ -54,8 +56,8 @@ app.post('/signin',(req,res)=>{
     db.select('email','hash').from('login')
         .where('email','=',req.body.email)
         .then(data => {
-            const isVailid = bcrypt.compareSync(req.body.password,data[0].hash)
-            if(isVailid){
+            const isValid = bcrypt.compareSync(req.body.password,data[0].hash);
+            if(isValid){
                 return db.select('*').from('users')
                     .where('email','=',req.body.email)
                     .then(user=>{
