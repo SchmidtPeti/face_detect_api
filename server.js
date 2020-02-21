@@ -43,7 +43,7 @@ const database = {
             joined: new Date()
         }
     ]
-}
+};
 
 
 app.get('/',(req,res)=>{
@@ -125,7 +125,6 @@ app.put('/image',(req,res)=>{
         .catch(err=>console.log(err))
 });
 
-app.listen(3000, () => {
+app.listen(process.env.PORT || 1337, () => {
     console.log('It is working on port 3000');
 });
-console.log(process.env.NODE_HOST);
