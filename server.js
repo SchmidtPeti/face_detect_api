@@ -37,6 +37,14 @@ db.schema.hasTable('users').then(function(exists) {
         });
     }
 });
+db('users').insert({
+    name: 'alma',
+    email: 'virsli',
+    password: 'alma',
+    hash: '',
+    entries: 2,
+    date: new Date(),
+});
 
 const database = {
     users: [
@@ -63,7 +71,7 @@ const database = {
 
 
 app.get('/',(req,res)=>{
-   res.send(database.users);
+   db.select().table('users').then(users => console.log(users));
 });
 
 app.post('/signin',(req,res)=>{
