@@ -53,10 +53,10 @@ app.get('/',(req,res)=>{
 });
 
 app.post('/signin',(req,res)=>{
-    db.select('email','hash').from('login')
+    db.select('email','password').from('login')
         .where('email','=',req.body.email)
         .then(data => {
-            const isValid = bcrypt.compareSync(req.body.password,data[0].hash);
+            const isValid = req.body.password === data[0].password;//bcrypt was here
             if(isValid){
                 return db.select('*').from('users')
                     .where('email','=',req.body.email)
@@ -74,7 +74,7 @@ app.post('/signin',(req,res)=>{
 
 app.post('/register',(req,res)=>{
     const {name,email,password} = req.body;
-    const hash = bcrypt.hashSync(password,10);
+    const hash = '';//bcrypt.hashSync(password,10);
     db.transaction(trx => {
        trx.insert({
            hash:hash,
@@ -84,6 +84,7 @@ app.post('/register',(req,res)=>{
            .then(loginEmail=>{
                return trx('users').returning('*')
                    .insert({
+                       password: password,
                        email:loginEmail[0],
                        name:name,
                        joined: new Date()
