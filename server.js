@@ -37,14 +37,6 @@ db.schema.hasTable('users').then(function(exists) {
         });
     }
 });
-db('users').insert({
-    name: 'alma',
-    email: 'virsli',
-    password: 'alma',
-    hash: '',
-    entries: 2,
-    date: new Date(),
-});
 
 const database = {
     users: [
@@ -96,8 +88,20 @@ app.post('/signin',(req,res)=>{
 
 app.post('/register',(req,res)=>{
     const {name,email,password} = req.body;
-    const hash = '';//bcrypt.hashSync(password,10);
-    db.transaction(trx => {
+    const hash = bcrypt.hashSync(password,10);
+    const isUserExists = (db('users').where('name', email).andWhere('email', email) > 0);
+    if(!isUserExists){
+        db('users').returning('*').insert({
+            name: name,
+            email: email,
+            password: password,
+            hash: hash,
+            entries: 0,
+            date: new Date(),
+        }).then(user=>{ return res.json(user)})
+            .catch(error=>res.status(400).json('unable to register'));
+    }
+    /*db.transaction(trx => {
        trx.insert({
            hash:hash,
            email:email
@@ -123,7 +127,7 @@ app.post('/register',(req,res)=>{
             joined: new Date()
         }).then(user=>{res.json(user[0])
 
-        }).catch(err=>res.status(400).json('unable to register'));
+        }).catch(err=>res.status(400).json('unable to register'));*/
 });
 
 app.get('/profile/:id',(req,res) =>{
