@@ -71,7 +71,7 @@ const database = {
 
 
 app.get('/',(req,res)=>{
-   return db.select().table('users');
+   return db.select().table('users').then(users=>res.json(users));
 });
 
 app.post('/signin',(req,res)=>{
