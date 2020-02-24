@@ -75,7 +75,7 @@ app.get('/',(req,res)=>{
 });
 
 app.post('/signin',(req,res)=>{
-    db.select('email','password').from('login')
+    db.select('email','password').from('users')
         .where('email','=',req.body.email)
         .then(data => {
             const isValid = req.body.password === data[0].password;//bcrypt was here
@@ -101,7 +101,7 @@ app.post('/register',(req,res)=>{
        trx.insert({
            hash:hash,
            email:email
-       }).into('login')
+       }).into('users')
            .returning('email')
            .then(loginEmail=>{
                return trx('users').returning('*')
@@ -150,6 +150,4 @@ app.put('/image',(req,res)=>{
         .catch(err=>console.log(err))
 });
 
-app.listen(process.env.PORT || 1337, () => {
-    console.log('It is working on port 3000');
-});
+app.listen(process.env.PORT || 1337, () => {});
