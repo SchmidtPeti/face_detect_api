@@ -71,7 +71,7 @@ const database = {
 
 
 app.get('/',(req,res)=>{
-   console.log(db.select().table('users'));
+   return db.select().table('users');
 });
 
 app.post('/signin',(req,res)=>{
