@@ -26,7 +26,7 @@ app.use(cors());
 
 db.schema.hasTable('users').then(function(exists) {
     if (!exists) {
-        return knex.schema.createTable('users', function(t) {
+        return db.schema.createTable('users', function(t) {
             t.increments('id').primary();
             t.string('name', 100);
             t.string('email', 100);
