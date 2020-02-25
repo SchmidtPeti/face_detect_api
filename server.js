@@ -102,7 +102,7 @@ app.post('/register',(req,res)=>{
             entries: 0,
             date: new Date(),
         }).then(user=>{ return res.json(user)})
-            .catch(error=>res.status(400).json('unable to register'));
+            .catch(error=>res.status(400).json(error));
     }
     else{
         res.status(400).json("user exits");
