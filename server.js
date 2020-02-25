@@ -91,6 +91,8 @@ app.post('/register',(req,res)=>{
     const {name,email,password} = req.body;
     const hash = bcrypt.hashSync(password,10);
     const isUserExists = db('users').where('name', email).andWhere('email', email).count('id') > 0;
+    console.log('exits user',isUserExists);
+    console.log('hash',hash);
     if(!isUserExists){
         db('users').returning('*').insert({
             name: name,
