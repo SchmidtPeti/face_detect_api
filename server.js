@@ -89,8 +89,8 @@ app.post('/signin',(req,res)=>{
 
 app.post('/register',(req,res)=>{
     const {name,email,password} = req.body;
-    const hash = "";//bcrypt.hashSync(password,10);
-    const isUserExists = (db('users').where('name', email).andWhere('email', email) > 0);
+    const hash = bcrypt.hashSync(password,10);
+    const isUserExists = db('users').where('name', email).andWhere('email', email).count > 0;
     if(!isUserExists){
         db('users').returning('*').insert({
             name: name,
@@ -101,6 +101,9 @@ app.post('/register',(req,res)=>{
             date: new Date(),
         }).then(user=>{ return res.json(user)})
             .catch(error=>res.status(400).json('unable to register'));
+    }
+    else{
+        res.status(400).json("user exits");
     }
     /*db.transaction(trx => {
        trx.insert({
