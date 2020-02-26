@@ -159,5 +159,10 @@ app.put('/image',(req,res)=>{
         .then(entries=> console.log(entries))
         .catch(err=>console.log(err))
 });
+app.post('/user_delete',(req,res)=>{
+    const {id} = req.body;
+    db('users').where('id',id).del().then((error) => res.status(200).json("User deleted"))
+        .catch((error)=>res.status(400).json("Something went wrong"));
+});
 
 app.listen(process.env.PORT || 1337, () => {});
