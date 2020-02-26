@@ -157,8 +157,8 @@ app.put('/image',(req,res)=>{
     db.select('*').from('users').where({
         id:id
     }).increment('entries',1).returning('entries')
-        .then(entries=> console.log(entries))
-        .catch(err=>console.log(err))
+        .then(entries=> res.json(entries))
+        .catch(err=>res.json("Something went wrong"))
 });
 app.post('/user_delete',(req,res)=>{
     const {id} = req.body;
