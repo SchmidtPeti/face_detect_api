@@ -67,14 +67,15 @@ app.get('/',(req,res)=>{
 });
 
 app.post('/signin',(req,res)=>{
-    db.select('email','password').from('users')
-        .where('email','=',req.body.email)
+    const {email,password} = req.body;
+    db.select('email','password','hash').from('users')
+        .where('email','=',email)
         .then(data => {
             //const isValid = req.body.password === data[0].password;//bcrypt was here
             const isValid = bcrypt.compareSync(req.body.password,data[0].hash);
             if(isValid){
                 return db.select('*').from('users')
-                    .where('email','=',req.body.email)
+                    .where('email','=',email)
                     .then(user=>{
                         res.json(user[0]);
                     })
