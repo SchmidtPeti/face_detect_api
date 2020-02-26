@@ -90,9 +90,8 @@ app.post('/signin',(req,res)=>{
 app.post('/register',(req,res)=>{
     const {name,email,password} = req.body;
     const hash = bcrypt.hashSync(password,10);
-    const isUserExists = db('users').where('name', email).andWhere('email', email).count('id') > 0;
+    const isUserExists = 0 < db('users').where('name', email).andWhere('email', email).count('id');
     if(!isUserExists){
-        console.log('im in');
         db('users').insert({
             name: name,
             email: email,
@@ -100,8 +99,8 @@ app.post('/register',(req,res)=>{
             hash: hash,
             entries: 0,
             date: new Date(),
-        }).then(res.json("success"))
-            .catch(error=>res.status(400).json(error));
+        });
+        res.json("success");
     }
     else{
         res.status(400).json("user exits");
