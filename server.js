@@ -100,7 +100,10 @@ app.post('/register',(req,res)=>{
             entries: 0,
             date: new Date(),
         }).then(() => res.status(200).json("success"))
-            .catch(error=>res.status(400).json("something went wrong"));}
+            .catch(error=>{
+                console.log(error);
+                res.status(400).json("something went wrong");
+            })}
     else{
         res.status(400).json("user exits");
     }
