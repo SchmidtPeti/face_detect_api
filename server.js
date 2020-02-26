@@ -99,7 +99,8 @@ app.post('/register',(req,res)=>{
             hash: hash,
             entries: 0,
             date: new Date(),
-        });
+        }).then(success => res.status(200).json("success"))
+            .catch(error=>res.status(400).json("something went wrong"));
         res.json("success");
     }
     else{
