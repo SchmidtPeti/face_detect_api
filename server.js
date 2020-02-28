@@ -72,7 +72,7 @@ app.post('/signin',(req,res)=>{
         .where('email','=',email)
         .then(data => {
             //const isValid = req.body.password === data[0].password;//bcrypt was here
-            const isValid = bcrypt.compareSync(req.body.password,data[0].hash);
+            const isValid = bcrypt.compareSync(password,data[0].hash);
             if(isValid){
                 return db.select('*').from('users')
                     .where('email','=',email)
@@ -108,33 +108,6 @@ app.post('/register',(req,res)=>{
     else{
         res.status(400).json("user exits");
     }
-    /*db.transaction(trx => {
-       trx.insert({
-           hash:hash,
-           email:email
-       }).into('users')
-           .returning('email')
-           .then(loginEmail=>{
-               return trx('users').returning('*')
-                   .insert({
-                       password: password,
-                       email:loginEmail[0],
-                       name:name,
-                       joined: new Date()
-                   })
-                   .then(user=>{
-                       res.json(user[0])
-                       })
-           })
-    });
-    db('users').returning('*')
-        .insert({
-            email: email,
-            name: name,
-            joined: new Date()
-        }).then(user=>{res.json(user[0])
-
-        }).catch(err=>res.status(400).json('unable to register'));*/
 });
 
 app.get('/profile/:id',(req,res) =>{
