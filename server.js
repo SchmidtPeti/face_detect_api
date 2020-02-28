@@ -77,7 +77,7 @@ app.post('/signin',(req,res)=>{
                 return db.select('*').from('users')
                     .where('email','=',email)
                     .then(user=>{
-                        res.json(user[0]);
+                        res.status(200).json(user[0]);
                     })
                     .catch(err => res.status(400).json('unable to get user'))
             }
@@ -100,7 +100,7 @@ app.post('/register',(req,res)=>{
             hash: hash,
             entries: 0,
             joined: new Date(),
-        }).then(() => res.status(200).json("success"))
+        }).then((registered_user) => res.status(200).json(registered_user))
             .catch(error=>{
                 console.log(error);
                 res.status(400).json("something went wrong");
