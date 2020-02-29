@@ -91,26 +91,25 @@ app.post('/signin',(req,res)=>{
 app.post('/register',(req,res)=>{
     const {name,email,password} = req.body;
     const hash = bcrypt.hashSync(password,10);
-    let user_withthis_email = await db('users').where('name', name).andWhere('email', email).select('id');
-
-    console.log(user_withthis_email);
-    const isUserExists = (0 < user_withthis_email.length);
-    if(!isUserExists){
-        db('users').returning('*').insert({
-            name: name,
-            email: email,
-            password: password,
-            hash: hash,
-            entries: 0,
-            joined: new Date(),
-        }).then((registered_user) => res.status(200).json(registered_user))
-            .catch(error=>{
-                console.log(error);
-                res.status(400).json("something went wrong");
-            })}
-    else{
-        res.status(400).json("user exits");
-    }
+    db('users').where('name', name).andWhere('email', email).select('id').then(user=>{
+        const isUserExists = (0 < user.length);
+        if(!isUserExists){
+            db('users').returning('*').insert({
+                name: name,
+                email: email,
+                password: password,
+                hash: hash,
+                entries: 0,
+                joined: new Date(),
+            }).then((registered_user) => res.status(200).json(registered_user))
+                .catch(error=>{
+                    console.log(error);
+                    res.status(400).json("something went wrong");
+                })}
+        else{
+            res.status(400).json("user exits");
+        }
+    });
 });
 
 app.get('/profile/:id',(req,res) =>{
